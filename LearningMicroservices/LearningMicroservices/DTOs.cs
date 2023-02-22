@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LearningMicroservices
+namespace LM.Shop.Service
 {
     public record ShopItemDto(Guid Id, string Name, string Description, decimal Price);
 

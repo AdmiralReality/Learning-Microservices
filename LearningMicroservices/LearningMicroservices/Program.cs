@@ -1,4 +1,4 @@
-namespace LearningMicroservices
+namespace LM.Shop.Service
 {
     public class Program
     {

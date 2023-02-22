@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "LearningMicroservices": {
+    "LM.Shop.Service": {
       "commandName": "Project",
       "launchUrl": "swagger",
       "environmentVariables": {

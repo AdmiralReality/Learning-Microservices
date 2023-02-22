@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LearningMicroservices.Controllers
+namespace LM.Shop.Service.Controllers
 {
     [Route("shop")]
     [ApiController]
     public class ShopController : ControllerBase
     {
-        // CRUD
-
         private static List<ShopItemDto> items = new() {
             new ShopItemDto (Guid.NewGuid(),  "Boots of speed",  "Basic mobility boots",  450),
             new ShopItemDto (Guid.NewGuid(),  "Luden",  "Advanced mage staff",  3400),
@@ -22,13 +20,17 @@ namespace LearningMicroservices.Controllers
         }
 
         [HttpGet("{id}")]
-        public ShopItemDto GetById(Guid id)
+        public IActionResult GetById(Guid id)
         {
-            return items.SingleOrDefault(x => x.Id == id);
+            var item = items.SingleOrDefault(x => x.Id == id);
+
+            if (item is null)
+                return NotFound();
+
+            return new JsonResult(item);
         }
 
-        // Put supposed to be idempotent, i.g. same request always leads to the same result
-        // (changes state, not iterates it)
+        // Put supposed to be idempotent, i.g. same request always leads to the same result (changes state, not iterates it)
         [HttpPut]
         public IActionResult Put(UpdateShopItemDto item)
         {
@@ -42,7 +44,7 @@ namespace LearningMicroservices.Controllers
             // TODO replace with context update function.
             var index = items.FindIndex(x => x.Id == item.Id);
 
-            var updatedItem = existingItem with { // TODO change only filled fields???
+            var updatedItem = existingItem with {
                 Name = item.Name,
                 Description = item.Description,
                 Price = item.Price
