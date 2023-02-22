@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using LM.Shop.Service.Entities;
+using LM.Shop.Service.Extensions;
+using LM.Shop.Service.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LM.Shop.Service.Controllers
@@ -7,22 +10,18 @@ namespace LM.Shop.Service.Controllers
     [ApiController]
     public class ShopController : ControllerBase
     {
-        private static List<ShopItemDto> items = new() {
-            new ShopItemDto (Guid.NewGuid(),  "Boots of speed",  "Basic mobility boots",  450),
-            new ShopItemDto (Guid.NewGuid(),  "Luden",  "Advanced mage staff",  3400),
-            new ShopItemDto (Guid.NewGuid(),  "Rabaddon",  "Powerful hat",  3600)
-        };
+        private static ShopItemRepository _repository = new ShopItemRepository();
 
         [HttpGet]
-        public IEnumerable<ShopItemDto> Get()
+        public async Task<IEnumerable<ShopItemDto>> GetAsync()
         {
-            return items;
+            return (await _repository.GetAllAsync()).Select(x => x.ToDto());
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetByIdAsync(Guid id)
         {
-            var item = items.SingleOrDefault(x => x.Id == id);
+            var item = await _repository.GetAsync(id);
 
             if (item is null)
                 return NotFound();
@@ -32,49 +31,42 @@ namespace LM.Shop.Service.Controllers
 
         // Put supposed to be idempotent, i.g. same request always leads to the same result (changes state, not iterates it)
         [HttpPut]
-        public IActionResult Put(UpdateShopItemDto item)
+        public async Task<IActionResult> PutAsync(UpdateShopItemDto item)
         {
-            var existingItem = items.Where(x => x.Id == item.Id).SingleOrDefault();
-
-            if (existingItem is null)
+            var newItem = new ShopItem
             {
-                return NotFound();
-            }
-
-            // TODO replace with context update function.
-            var index = items.FindIndex(x => x.Id == item.Id);
-
-            var updatedItem = existingItem with {
+                Id = item.Id,
                 Name = item.Name,
                 Description = item.Description,
-                Price = item.Price
+                Price = item.Price,
+                CreateDate = DateTimeOffset.UtcNow
             };
 
-            items[index] = updatedItem;
+            await _repository.UpdateAsync(newItem);
 
             return NoContent();
         }
 
         [HttpPost]
-        public IActionResult Post(CreateShopItemDto item)
+        public async Task<IActionResult> PostAsync(CreateShopItemDto item)
         {
-            var newItem = new ShopItemDto(Guid.NewGuid(), item.Name, item.Description, item.Price);
+            var newItem = new ShopItem
+            {
+                Id = Guid.NewGuid(),
+                Name = item.Name,
+                Description = item.Description,
+                Price = item.Price,
+                CreateDate = DateTimeOffset.UtcNow,
+            };
 
-            items.Add(newItem);
-            return CreatedAtAction(nameof(GetById), new { id = newItem.Id }, newItem);
+            await _repository.CreateAsync(newItem);
+            return CreatedAtAction(nameof(GetByIdAsync), new { id = newItem.Id }, newItem);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            var index = items.FindIndex(x => x.Id == id);
-
-            if (index < 0)
-            {
-                return NotFound();
-            }
-
-            items.RemoveAt(index);
+            await _repository.RemoveAsync(id);
             return NoContent();
         }
     }

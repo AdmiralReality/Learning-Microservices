@@ -6,7 +6,7 @@ namespace LM.Shop.Service
 
     public record UpdateShopItemDto([Required] Guid Id, string Name, string Description, [Required][Range(0, double.MaxValue)] decimal Price);
 
-    public record CreateShopItemDto([Required] string Name, string Description, [Required][Range(0, double.MaxValue)] decimal Price);
+    public record CreateShopItemDto([Required] string Name, string Description, [Required][Range(0, double.MaxValue)] decimal Price, DateTimeOffset CreatedDate);
 
     public record RemoveShopItemDto([Required] Guid Id);
 }
