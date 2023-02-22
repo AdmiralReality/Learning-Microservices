@@ -26,7 +26,7 @@ namespace LM.Shop.Service.Controllers
             if (item is null)
                 return NotFound();
 
-            return new JsonResult(item);
+            return new JsonResult(item.ToDto());
         }
 
         // Put supposed to be idempotent, i.g. same request always leads to the same result (changes state, not iterates it)
