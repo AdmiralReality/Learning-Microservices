@@ -1,11 +1,12 @@
 ﻿using LM.Shop.Service.Entities;
+using LM.Shop.Service.Repositories;
 using LM.Shop.Service.Settings;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using System.Runtime.CompilerServices;
 
-namespace LM.Shop.Service.Repositories
+namespace LM.Shop.Service.Installers
 {
     public static class MongoDbInstaller
     {
@@ -25,8 +26,9 @@ namespace LM.Shop.Service.Repositories
         {
             var serviceSettings = configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
 
-            services.AddSingleton(ServiceProvider => {
-                
+            services.AddSingleton(ServiceProvider =>
+            {
+
                 var mongoDbSettings = configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
                 var mongoClient = new MongoClient(mongoDbSettings.ConnectionString); // TODO get db string from configuration
                 return mongoClient.GetDatabase(serviceSettings.ServiceName);
