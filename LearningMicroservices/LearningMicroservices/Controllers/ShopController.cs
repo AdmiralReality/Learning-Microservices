@@ -10,7 +10,12 @@ namespace LM.Shop.Service.Controllers
     [ApiController]
     public class ShopController : ControllerBase
     {
-        private static ShopItemRepository _repository = new ShopItemRepository();
+        private readonly IShopItemRepository _repository;
+
+        public ShopController(IShopItemRepository repository)
+        {
+            _repository = repository;
+        }
 
         [HttpGet]
         public async Task<IEnumerable<ShopItemDto>> GetAsync()

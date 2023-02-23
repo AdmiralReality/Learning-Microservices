@@ -1,4 +1,4 @@
-using LM.Shop.Service.Repositories.MongoStuff;
+using LM.Shop.Service.Repositories;
 
 namespace LM.Shop.Service
 {
@@ -17,7 +17,7 @@ namespace LM.Shop.Service
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            BsonSerializerSettingsInstaller.Install();
+            MongoDbInstaller.Install(builder.Services, builder.Configuration);
 
             var app = builder.Build();
 

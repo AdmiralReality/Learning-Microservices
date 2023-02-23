@@ -3,18 +3,15 @@ using MongoDB.Driver;
 
 namespace LM.Shop.Service.Repositories
 {
-    public class ShopItemRepository
+    public class ShopItemRepository : IShopItemRepository
     {
-        private const string _dbName = "Shop";
         private const string _collectionName = "ShopItems";
 
         private readonly IMongoCollection<ShopItem> _dbCollection;
         private readonly FilterDefinitionBuilder<ShopItem> _filterDefinitionBuilder;
 
-        public ShopItemRepository()
+        public ShopItemRepository(IMongoDatabase db)
         {
-            var mongoClient = new MongoClient("mongodb://localhost:27017"); // TODO get db string from configuration
-            var db = mongoClient.GetDatabase(_dbName);
             _dbCollection = db.GetCollection<ShopItem>(_collectionName);
             _filterDefinitionBuilder = new FilterDefinitionBuilder<ShopItem>();
         }
@@ -22,7 +19,7 @@ namespace LM.Shop.Service.Repositories
         public async Task<IReadOnlyCollection<ShopItem>> GetAllAsync()
         {
             return await _dbCollection.Find(_filterDefinitionBuilder.Empty).ToListAsync();
-        } 
+        }
 
         public async Task<ShopItem> GetAsync(Guid id)
         {
