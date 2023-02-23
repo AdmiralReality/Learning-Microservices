@@ -1,3 +1,5 @@
+using LM.Shop.Service.Repositories.MongoStuff;
+
 namespace LM.Shop.Service
 {
     public class Program
@@ -14,6 +16,8 @@ namespace LM.Shop.Service
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            BsonSerializerSettingsInstaller.Install();
 
             var app = builder.Build();
 
