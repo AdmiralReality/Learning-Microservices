@@ -1,4 +1,4 @@
-using LM.Shop.Service.Repositories;
+using LM.Shop.Service.Installers;
 
 namespace LM.Shop.Service
 {
