@@ -1,3 +1,5 @@
+using LM.Shop.Service.Installers;
+
 namespace LM.Shop.Service
 {
     public class Program
@@ -8,10 +10,14 @@ namespace LM.Shop.Service
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options => {
+                options.SuppressAsyncSuffixInActionNames = false;
+            });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            MongoDbInstaller.Install(builder.Services, builder.Configuration);
 
             var app = builder.Build();
 
