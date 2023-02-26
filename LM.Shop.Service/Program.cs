@@ -1,3 +1,4 @@
+using LM.Shop.Service.Entities;
 using LM.Shop.Service.Installers;
 
 namespace LM.Shop.Service
@@ -17,7 +18,7 @@ namespace LM.Shop.Service
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            MongoDbInstaller.Install(builder.Services, builder.Configuration);
+            builder.Services.AddMongo().AddMongoRepository<ShopItem>("ShopItem");
 
             var app = builder.Build();
 

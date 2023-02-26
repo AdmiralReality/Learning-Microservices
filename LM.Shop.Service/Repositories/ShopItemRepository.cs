@@ -3,32 +3,30 @@ using MongoDB.Driver;
 
 namespace LM.Shop.Service.Repositories
 {
-    public class ShopItemRepository : IShopItemRepository
+    public class MongoRepository<T> : IRepository<T> where T : IEntity
     {
-        private const string _collectionName = "ShopItems";
+        private readonly IMongoCollection<T> _dbCollection;
+        private readonly FilterDefinitionBuilder<T> _filterDefinitionBuilder;
 
-        private readonly IMongoCollection<ShopItem> _dbCollection;
-        private readonly FilterDefinitionBuilder<ShopItem> _filterDefinitionBuilder;
-
-        public ShopItemRepository(IMongoDatabase db)
+        public MongoRepository(IMongoDatabase db, string collectionName)
         {
-            _dbCollection = db.GetCollection<ShopItem>(_collectionName);
-            _filterDefinitionBuilder = new FilterDefinitionBuilder<ShopItem>();
+            _dbCollection = db.GetCollection<T>(collectionName);
+            _filterDefinitionBuilder = new FilterDefinitionBuilder<T>();
         }
 
-        public async Task<IReadOnlyCollection<ShopItem>> GetAllAsync()
+        public async Task<IReadOnlyCollection<T>> GetAllAsync()
         {
             return await _dbCollection.Find(_filterDefinitionBuilder.Empty).ToListAsync();
         }
 
-        public async Task<ShopItem> GetAsync(Guid id)
+        public async Task<T> GetAsync(Guid id)
         {
             var filter = _filterDefinitionBuilder.Eq(entity => entity.Id, id);
 
             return await _dbCollection.Find(filter).FirstOrDefaultAsync();
         }
 
-        public async Task CreateAsync(ShopItem item)
+        public async Task CreateAsync(T item)
         {
             if (item is null)
             {
@@ -38,7 +36,7 @@ namespace LM.Shop.Service.Repositories
             await _dbCollection.InsertOneAsync(item);
         }
 
-        public async Task UpdateAsync(ShopItem item)
+        public async Task UpdateAsync(T item)
         {
             if (item is null)
             {

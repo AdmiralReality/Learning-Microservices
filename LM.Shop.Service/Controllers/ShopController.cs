@@ -10,9 +10,9 @@ namespace LM.Shop.Service.Controllers
     [ApiController]
     public class ShopController : ControllerBase
     {
-        private readonly IShopItemRepository _repository;
+        private readonly IRepository<ShopItem> _repository;
 
-        public ShopController(IShopItemRepository repository)
+        public ShopController(IRepository<ShopItem> repository)
         {
             _repository = repository;
         }

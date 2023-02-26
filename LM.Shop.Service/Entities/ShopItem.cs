@@ -1,6 +1,6 @@
 ﻿namespace LM.Shop.Service.Entities
 {
-    public class ShopItem
+    public class ShopItem : IEntity
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
