@@ -2,6 +2,7 @@
 using LM.Shop.Service.Repositories;
 using LM.Shop.Service.Settings;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;

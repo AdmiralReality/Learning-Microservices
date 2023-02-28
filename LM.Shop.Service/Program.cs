@@ -1,5 +1,6 @@
 using LM.Shop.Service.Entities;
 using LM.Shop.Service.Installers;
+using Microsoft.Extensions.Configuration;
 
 namespace LM.Shop.Service
 {
